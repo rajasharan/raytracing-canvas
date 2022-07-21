@@ -12,43 +12,64 @@ console.log('height:', height);
 
 const size = Math.min(width, height);
 
+const frameTime = document.getElementById('last-frame');
 const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 canvas.width = size;
 canvas.height = size;
 console.log(canvas, canvas.width, canvas.height);
 
-const ctx = canvas.getContext('2d');
-const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-const data = imageData.data;
-console.log('image data size:', data.length, data.length/4);
+document.addEventListener('mousedown', doMouseDown, false);
+const lightSource = [-1, -0.1, 0.5];
+drawImage();
 
-for (let y=0; y < size; y++) {
-    for (let x=0; x < size; x++) {
-        const i = x + size*y;
-        const r = i*4;
-        const g = r+1;
-        const b = g+1;
-        const a = b+1;
+function doMouseDown(event) {
+    event.preventDefault();
+    const x = event.pageX;
+    const y = event.pageY;
 
-        const X = (x - size/2)/size; // -0.5 -> 0.5
-        const Y = (size/2 - y)/size; // -0.5 -> 0.5
-        const { red, green, blue, alpha } = perPixel(X, Y);
+    const X = (Math.min(x,size) - size/2)/size;
+    const Y = (size/2 - Math.min(y, size))/size;
 
-        data[r] = red;
-        data[g] = green;
-        data[b] = blue;
-        data[a] = alpha;
-    }
+    lightSource[0] = -X;
+    lightSource[1] = -Y;
+    drawImage();
 }
 
-ctx.putImageData(imageData, 0, 0);
+function drawImage() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const start = new Date().getTime();
+
+    for (let y=0; y < size; y++) {
+        for (let x=0; x < size; x++) {
+            const i = x + size*y;
+            const r = i*4;
+            const g = r+1;
+            const b = g+1;
+            const a = b+1;
+
+            const X = (x - size/2)/size; // -0.5 -> 0.5
+            const Y = (size/2 - y)/size; // -0.5 -> 0.5
+            const { red, green, blue, alpha } = perPixel(X, Y);
+
+            data[r] = red;
+            data[g] = green;
+            data[b] = blue;
+            data[a] = alpha;
+        }
+    }
+
+    const stop = new Date().getTime();
+    ctx.putImageData(imageData, 0, 0);
+    frameTime.innerHTML = `LastFrame: ${stop - start} ms<br>LightSource: {${-lightSource[0].toLocaleString('en')}, ${-lightSource[1].toLocaleString('en')}, ${lightSource[2].toLocaleString('en')}}`;
+}
 
 function perPixel(x, y) {
     // const camera = [0, 0, 0];
     const screen = [x, y, 1];
     const sphereOrigin = [0, 0, 3];
     const sphereRadius = 1;
-    const lightSource = [-1, -0.1, 0.5];
 
     // at^2 + bt + c = 0
     const a = dot(screen, screen);
