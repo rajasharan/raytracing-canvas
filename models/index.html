@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <title>Software Rendering in canvas</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../bulma.min.css">
+</head>
+<body>
+  <div>
+    <canvas id="canvas"></canvas>
+    <div id="frame-time" class="is-family-monospace ml-2 mt-5">LastFrame (ms): ...</div>
+  </div>
+  <script src="./app.js"></script>
+  <script src="./triangles.js"></script>
+  <script src="./mesh.js"></script>
+  <script src="./draw-calls.js"></script>
+  <script src="./fetch-models.js"></script>
+  <script type="text/javascript">
+    // document.addEventListener('mousedown', doMouseDown, false);
+    // function doMouseDown(event) {
+    //     event.preventDefault();
+    //     const x = event.pageX;
+    //     const y = event.pageY;
+
+    //     const X = x;
+    //     const Y = size - y;
+
+    //     light_source[0] = X;
+    //     light_source[1] = Y;
+    //     console.log(light_source);
+    //     drawMesh();
+    // }
+  </script>
+</body>
+</html>
