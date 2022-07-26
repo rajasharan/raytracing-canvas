@@ -1,4 +1,28 @@
+const zbuffer = [];
+for (let i=0; i<size*size; i++) {
+    zbuffer.push(Number.MIN_SAFE_INTEGER);
+}
 function mesh(data) {
+    for (const face of faces) {
+        const screen_coords = [];
+        const world_coords = [];
+        for (let j=0; j<3; j++) {
+            const v = vertices[face[j]];
+            screen_coords.push(matrix_vec(M, matrix(v)));
+            world_coords.push(v);
+        }
+
+        const n = normalize(cross(
+            sub(world_coords[2], world_coords[0]),
+            sub(world_coords[1], world_coords[0])
+        ));
+
+        const intensity = dot(n, normalize(light_source));
+        triangle(screen_coords, zbuffer, intensity, data);
+    }
+}
+
+function mesh_old(data) {
     const zbuffer = [];
     for (let i=0; i<size*size; i++) {
         zbuffer.push(Number.MIN_SAFE_INTEGER);
